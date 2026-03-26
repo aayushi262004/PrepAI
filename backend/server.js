@@ -3,8 +3,8 @@ const mongoose = require('mongoose');
 const cors = require('cors');
 const helmet = require('helmet');
 const rateLimit = require('express-rate-limit');
-require('dotenv').config({ path: '.env.example' });
-console.log("API KEY:", process.env.GROQ_API_KEY);
+require('dotenv').config();
+
 const authRoutes = require('./routes/auth');
 const interviewRoutes = require('./routes/interview');
 const resumeRoutes = require('./routes/resume');
