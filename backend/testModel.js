@@ -1,7 +1,7 @@
 import dotenv from "dotenv";
 import Groq from "groq-sdk";
 
-dotenv.config({ path: ".env.example" });
+dotenv.config();
 
 console.log("API KEY:", process.env.GROQ_API_KEY); // ✅ correct place
 
