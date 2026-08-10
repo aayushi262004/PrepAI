@@ -1,70 +1,75 @@
-import { useState } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
-import { Upload, FileText, CheckCircle, XCircle, Lightbulb, Loader2, RotateCcw, ChevronRight } from 'lucide-react'
+import { useState, useEffect } from 'react'
+import { motion } from 'framer-motion'
+import { Upload, FileText, BarChart3, CheckCircle, XCircle, Lightbulb, Loader2, RotateCcw, Star, TrendingUp } from 'lucide-react'
 import toast from 'react-hot-toast'
 import api from '../utils/api'
 
-function ScoreArc({ score }) {
-  const r = 50
-  const circ = 2 * Math.PI * r
-  const [offset, setOffset] = useState(circ)
-  useState(() => { setTimeout(() => setOffset(circ - (score / 100) * circ), 200) })
-  // Use imperative effect instead
-  const color = score >= 70 ? '#34d399' : score >= 45 ? '#fbbf24' : '#f87171'
+function ScoreGauge({ score }) {
+  const [display, setDisplay] = useState(0)
+  useEffect(() => {
+    let cur = 0; const step = score / 60
+    const t = setInterval(() => { cur = Math.min(cur + step, score); setDisplay(Math.round(cur)); if (cur >= score) clearInterval(t) }, 16)
+    return () => clearInterval(t)
+  }, [score])
+  const color = score >= 70 ? 'text-emerald-400' : score >= 45 ? 'text-amber-400' : 'text-red-400'
+  const barColor = score >= 70 ? 'bg-emerald-500' : score >= 45 ? 'bg-amber-500' : 'bg-red-500'
+  const label = score >= 70 ? 'Strong Resume' : score >= 45 ? 'Needs Improvement' : 'Needs Work'
   return (
-    <svg width="120" height="120" viewBox="0 0 120 120">
-      <circle cx="60" cy="60" r={r} fill="none" stroke="#1e1e2a" strokeWidth="10" />
-      <circle cx="60" cy="60" r={r} fill="none" stroke={color} strokeWidth="10"
-        strokeLinecap="round" strokeDasharray={circ}
-        strokeDashoffset={circ - (score / 100) * circ}
-        transform="rotate(-90 60 60)"
-        style={{ transition: 'stroke-dashoffset 1.5s cubic-bezier(0.34,1.56,0.64,1)' }}
-      />
-      <text x="60" y="56" textAnchor="middle" fill="white" fontSize="22" fontWeight="700" fontFamily="Syne">{score}</text>
-      <text x="60" y="72" textAnchor="middle" fill="#6b7280" fontSize="11" fontFamily="DM Sans">/ 100</text>
-    </svg>
+    <div className="flex flex-col items-center py-6">
+      <div className={`text-8xl font-display font-bold ${color} tabular-nums`}>{display}</div>
+      <div className="text-gray-500 text-xl mt-1">/ 100</div>
+      <div className={`mt-3 px-4 py-1 rounded-full text-sm font-medium ${score >= 70 ? 'bg-emerald-900/40 text-emerald-300' : score >= 45 ? 'bg-amber-900/40 text-amber-300' : 'bg-red-900/40 text-red-300'}`}>{label}</div>
+      <div className="w-64 mt-5 bg-surface-300 rounded-full h-2">
+        <motion.div className={`h-2 rounded-full ${barColor}`} initial={{ width: 0 }} animate={{ width: `${score}%` }} transition={{ duration: 1.2, ease: [0.34, 1.56, 0.64, 1] }} />
+      </div>
+    </div>
+  )
+}
+
+function SemanticMatchCard({ score }) {
+  const color = score >= 70 ? 'text-emerald-400' : score >= 45 ? 'text-amber-400' : 'text-red-400'
+  const barColor = score >= 70 ? 'bg-emerald-500' : score >= 45 ? 'bg-amber-500' : 'bg-red-500'
+  return (
+    <div className="glass-card mb-5">
+      <h3 className="section-title flex items-center gap-2"><TrendingUp className="w-4 h-4 text-brand-400" /> Semantic Match Score</h3>
+      <div className="flex items-center gap-5">
+        <div className={`text-4xl font-display font-bold ${color} tabular-nums flex-shrink-0`}>{score}<span className="text-lg text-gray-500">/100</span></div>
+        <div className="flex-1">
+          <div className="h-2 bg-surface-300 rounded-full overflow-hidden mb-2">
+            <motion.div className={`h-full rounded-full ${barColor}`} initial={{ width: 0 }} animate={{ width: `${score}%` }} transition={{ duration: 1, ease: 'easeOut' }} />
+          </div>
+          <p className="text-xs text-gray-500 leading-relaxed">
+            Computed independently from the AI score above — embedding similarity between your resume and the job description, not an LLM judgment.
+          </p>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+function SectionBar({ label, score, max, color }) {
+  const pct = Math.round((score / max) * 100)
+  return (
+    <div>
+      <div className="flex justify-between text-sm mb-1">
+        <span className="text-gray-300">{label}</span>
+        <span className="text-gray-400 font-mono">{score}/{max}</span>
+      </div>
+      <div className="h-2 bg-surface-300 rounded-full overflow-hidden">
+        <motion.div className={`h-full rounded-full ${color}`} initial={{ width: 0 }} animate={{ width: `${pct}%` }} transition={{ duration: 1, ease: 'easeOut' }} />
+      </div>
+    </div>
   )
 }
 
 function FileDropZone({ onFile, file }) {
   const [dragging, setDragging] = useState(false)
-
-  const handleDrop = (e) => {
-    e.preventDefault()
-    setDragging(false)
-    const f = e.dataTransfer.files[0]
-    if (f) onFile(f)
-  }
-
+  const handleDrop = (e) => { e.preventDefault(); setDragging(false); const f = e.dataTransfer.files[0]; if (f) onFile(f) }
   return (
-    <label
-      onDragOver={(e) => { e.preventDefault(); setDragging(true) }}
-      onDragLeave={() => setDragging(false)}
-      onDrop={handleDrop}
-      className={`flex flex-col items-center justify-center gap-3 p-8 rounded-xl border-2 border-dashed cursor-pointer transition-all duration-200 ${
-        dragging
-          ? 'border-brand-500 bg-brand-600/10'
-          : file
-          ? 'border-emerald-600/40 bg-emerald-600/5'
-          : 'border-white/10 bg-surface-200 hover:border-brand-600/40 hover:bg-brand-600/5'
-      }`}
-    >
+    <label onDragOver={e => { e.preventDefault(); setDragging(true) }} onDragLeave={() => setDragging(false)} onDrop={handleDrop}
+      className={`flex flex-col items-center justify-center gap-3 p-8 rounded-xl border-2 border-dashed cursor-pointer transition-all ${dragging ? 'border-brand-500 bg-brand-600/10' : file ? 'border-emerald-600/40 bg-emerald-600/5' : 'border-white/10 bg-surface-200 hover:border-brand-600/40'}`}>
       <input type="file" accept=".pdf,.doc,.docx" className="hidden" onChange={e => onFile(e.target.files[0])} />
-      {file ? (
-        <>
-          <FileText className="w-8 h-8 text-emerald-400" />
-          <p className="text-sm font-medium text-emerald-300">{file.name}</p>
-          <p className="text-xs text-gray-500">{(file.size / 1024).toFixed(1)} KB · Click to change</p>
-        </>
-      ) : (
-        <>
-          <Upload className="w-8 h-8 text-gray-500" />
-          <div className="text-center">
-            <p className="text-sm font-medium text-gray-300">Drop your resume here</p>
-            <p className="text-xs text-gray-500 mt-1">PDF or DOCX · Max 5MB</p>
-          </div>
-        </>
-      )}
+      {file ? (<><FileText className="w-8 h-8 text-emerald-400" /><p className="text-sm font-medium text-emerald-300">{file.name}</p><p className="text-xs text-gray-500">{(file.size / 1024).toFixed(1)} KB · Click to change</p></>) : (<><Upload className="w-8 h-8 text-gray-500" /><p className="text-sm font-medium text-gray-300">Drop your resume here</p><p className="text-xs text-gray-500 mt-1">PDF or DOCX · Max 5MB</p></>)}
     </label>
   )
 }
@@ -78,13 +83,12 @@ export default function ResumeAnalysisPage() {
   const handleAnalyze = async (e) => {
     e.preventDefault()
     if (!file) return toast.error('Please upload your resume')
-    if (!jobDescription.trim()) return toast.error('Please paste the job description')
 
     setLoading(true)
     try {
       const formData = new FormData()
       formData.append('resume', file)
-      formData.append('jobDescription', jobDescription)
+      if (jobDescription.trim()) formData.append('jobDescription', jobDescription)
 
       const res = await api.post('/resume/analyze', formData, {
         headers: { 'Content-Type': 'multipart/form-data' }
@@ -100,78 +104,89 @@ export default function ResumeAnalysisPage() {
   const reset = () => { setResult(null); setFile(null); setJobDescription('') }
 
   if (result) {
+    const ss = result.sectionScores || {}
     return (
       <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="max-w-3xl">
         <div className="flex items-center justify-between mb-2">
-          <h1 className="page-header mb-0">Analysis Complete</h1>
+          <h1 className="page-header mb-0">Resume Report</h1>
           <button onClick={reset} className="btn-ghost flex items-center gap-2 text-sm">
             <RotateCcw className="w-4 h-4" /> New Analysis
           </button>
         </div>
         <p className="page-subheader">Analyzed: <span className="text-gray-300">{result.fileName}</span></p>
 
-        {/* Score + summary */}
-        <div className="glass-card mb-5 flex flex-col sm:flex-row items-center gap-6">
-          <ScoreArc score={result.matchScore} />
-          <div>
-            <p className="text-sm text-gray-500 mb-1">Match Score</p>
-            <h2 className="text-2xl font-display font-bold text-white mb-2">
-              {result.matchScore >= 70 ? 'Strong Match' : result.matchScore >= 45 ? 'Moderate Match' : 'Needs Work'}
-            </h2>
-            <p className="text-gray-400 text-sm leading-relaxed">{result.summaryFeedback}</p>
-          </div>
+        {/* Score */}
+        <div className="glass-card mb-5">
+          <ScoreGauge score={result.score} />
+          {result.summary && <p className="text-center text-gray-400 text-sm mt-2 max-w-lg mx-auto leading-relaxed">{result.summary}</p>}
         </div>
 
-        <div className="grid sm:grid-cols-2 gap-4 mb-5">
-          {/* Matched skills */}
-          <div className="glass-card">
-            <h3 className="section-title flex items-center gap-2">
-              <CheckCircle className="w-4 h-4 text-emerald-400" /> Matched Skills
-              <span className="ml-auto badge-green">{result.matchedSkills.length}</span>
-            </h3>
-            {result.matchedSkills.length === 0 ? (
-              <p className="text-sm text-gray-500">No matched skills found</p>
-            ) : (
-              <div className="flex flex-wrap gap-2">
-                {result.matchedSkills.map(s => (
-                  <span key={s} className="badge-green capitalize">{s}</span>
-                ))}
+        {/* Semantic match — ML-computed via embeddings, independent of the AI score above */}
+        {result.semanticMatchScore != null && <SemanticMatchCard score={result.semanticMatchScore} />}
+
+        {/* Section breakdown */}
+        {ss.skills_match !== undefined && (
+          <div className="glass-card mb-5">
+            <h3 className="section-title flex items-center gap-2"><BarChart3 className="w-4 h-4 text-brand-400" /> Score Breakdown</h3>
+            <div className="space-y-3">
+              <SectionBar label="Skills match" score={ss.skills_match} max={30} color="bg-brand-500" />
+              <SectionBar label="Experience relevance" score={ss.experience_relevance} max={25} color="bg-violet-500" />
+              <SectionBar label="Education fit" score={ss.education_fit} max={15} color="bg-teal-500" />
+              <SectionBar label="Keywords" score={ss.keywords} max={20} color="bg-amber-500" />
+              <SectionBar label="Formatting" score={ss.formatting} max={10} color="bg-emerald-500" />
+            </div>
+          </div>
+        )}
+
+        {/* Strengths */}
+        {result.strengths?.length > 0 && (
+          <div className="glass-card mb-5">
+            <h3 className="section-title flex items-center gap-2"><Star className="w-4 h-4 text-emerald-400" /> Strengths</h3>
+            <ul className="space-y-2">{result.strengths.map((s, i) => <li key={i} className="flex items-start gap-2 text-sm text-gray-300"><CheckCircle className="w-4 h-4 text-emerald-400 flex-shrink-0 mt-0.5" />{s}</li>)}</ul>
+          </div>
+        )}
+
+        {/* Matched / missing keywords */}
+        {(result.matchedKeywords?.length > 0 || result.missingKeywords?.length > 0) && (
+          <div className="grid sm:grid-cols-2 gap-4 mb-5">
+            {result.matchedKeywords?.length > 0 && (
+              <div className="glass-card">
+                <h3 className="section-title flex items-center gap-2"><CheckCircle className="w-4 h-4 text-emerald-400" /> Matched <span className="ml-auto text-xs bg-emerald-900/40 text-emerald-300 px-2 py-0.5 rounded-full">{result.matchedKeywords.length}</span></h3>
+                <div className="flex flex-wrap gap-1.5 max-h-32 overflow-y-auto">{result.matchedKeywords.map(k => <span key={k} className="badge-green text-xs capitalize">{k}</span>)}</div>
+              </div>
+            )}
+            {result.missingKeywords?.length > 0 && (
+              <div className="glass-card">
+                <h3 className="section-title flex items-center gap-2"><XCircle className="w-4 h-4 text-red-400" /> Missing <span className="ml-auto text-xs bg-red-900/40 text-red-300 px-2 py-0.5 rounded-full">{result.missingKeywords.length}</span></h3>
+                <div className="flex flex-wrap gap-1.5 max-h-32 overflow-y-auto">{result.missingKeywords.map(k => <span key={k} className="badge-red text-xs capitalize">{k}</span>)}</div>
               </div>
             )}
           </div>
+        )}
 
-          {/* Missing skills */}
-          <div className="glass-card">
-            <h3 className="section-title flex items-center gap-2">
-              <XCircle className="w-4 h-4 text-red-400" /> Missing Skills
-              <span className="ml-auto badge-red">{result.missingSkills.length}</span>
-            </h3>
-            {result.missingSkills.length === 0 ? (
-              <p className="text-sm text-gray-500">No missing skills — great job!</p>
-            ) : (
-              <div className="flex flex-wrap gap-2">
-                {result.missingSkills.map(s => (
-                  <span key={s} className="badge-red capitalize">{s}</span>
-                ))}
+        {/* Experience gap / tone feedback — only meaningful when a JD was given */}
+        {(result.experienceGap || result.toneFeedback) && (
+          <div className="grid sm:grid-cols-2 gap-4 mb-5">
+            {result.experienceGap && (
+              <div className="glass-card">
+                <h3 className="section-title">Experience Gap</h3>
+                <p className="text-sm text-gray-400 leading-relaxed">{result.experienceGap}</p>
+              </div>
+            )}
+            {result.toneFeedback && (
+              <div className="glass-card">
+                <h3 className="section-title">Tone & Writing</h3>
+                <p className="text-sm text-gray-400 leading-relaxed">{result.toneFeedback}</p>
               </div>
             )}
           </div>
-        </div>
+        )}
 
-        {/* Suggestions */}
-        {result.suggestions.length > 0 && (
+        {/* Recommendations */}
+        {result.recommendations?.length > 0 && (
           <div className="glass-card">
-            <h3 className="section-title flex items-center gap-2">
-              <Lightbulb className="w-4 h-4 text-amber-400" /> Improvement Suggestions
-            </h3>
-            <ul className="space-y-3">
-              {result.suggestions.map((s, i) => (
-                <li key={i} className="flex items-start gap-3 text-sm text-gray-300">
-                  <span className="flex-shrink-0 w-5 h-5 rounded-full bg-amber-600/20 text-amber-300 text-xs flex items-center justify-center font-medium mt-0.5">{i + 1}</span>
-                  {s}
-                </li>
-              ))}
-            </ul>
+            <h3 className="section-title flex items-center gap-2"><Lightbulb className="w-4 h-4 text-amber-400" /> Recommendations</h3>
+            <ul className="space-y-3">{result.recommendations.map((r, i) => <li key={i} className="flex items-start gap-3 text-sm text-gray-300"><span className="flex-shrink-0 w-5 h-5 rounded-full bg-amber-600/20 text-amber-300 text-xs flex items-center justify-center font-medium mt-0.5">{i + 1}</span>{r}</li>)}</ul>
           </div>
         )}
       </motion.div>
@@ -181,7 +196,7 @@ export default function ResumeAnalysisPage() {
   return (
     <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="max-w-2xl">
       <h1 className="page-header">Resume Analyzer</h1>
-      <p className="page-subheader">Upload your resume and paste the job description to get a detailed skill-gap analysis powered by NLP.</p>
+      <p className="page-subheader">Upload your resume to get an AI-scored ATS report — skill matching, keyword gaps, formatting issues, and actionable recommendations, all in one pass.</p>
 
       <form onSubmit={handleAnalyze} className="space-y-5">
         <div>
@@ -190,10 +205,10 @@ export default function ResumeAnalysisPage() {
         </div>
 
         <div>
-          <label className="label">Job Description *</label>
+          <label className="label">Job Description <span className="text-gray-600">(optional — recommended for skill-gap accuracy)</span></label>
           <textarea
-            className="textarea-field h-44"
-            placeholder="Paste the full job description here..."
+            className="textarea-field h-36"
+            placeholder="Paste the job description here for a targeted match score..."
             value={jobDescription}
             onChange={e => setJobDescription(e.target.value)}
           />
@@ -201,9 +216,9 @@ export default function ResumeAnalysisPage() {
 
         <button type="submit" disabled={loading} className="btn-primary flex items-center gap-2">
           {loading ? (
-            <><Loader2 className="w-4 h-4 animate-spin" /> Analyzing resume...</>
+            <><Loader2 className="w-4 h-4 animate-spin" /> AI is analyzing your resume...</>
           ) : (
-            <><FileText className="w-4 h-4" /> Analyze Resume</>
+            <><BarChart3 className="w-4 h-4" /> Analyze Resume</>
           )}
         </button>
       </form>
@@ -214,9 +229,10 @@ export default function ResumeAnalysisPage() {
         <div className="space-y-2">
           {[
             'Your resume text is extracted from the PDF/DOCX',
-            'A BERT-based model computes semantic similarity with the job description',
-            'Skills are matched and gaps are identified',
-            'Actionable suggestions are generated to improve your match rate',
+            'Scored like a real recruiter across 5 dimensions (skills, experience, education, keywords, formatting)',
+            'If you add a job description, skill gaps and experience fit are matched against it specifically',
+            'A second, independently-computed semantic match score is generated using sentence embeddings — not the LLM',
+            'Actionable recommendations are generated to raise your score',
           ].map((step, i) => (
             <div key={i} className="flex items-center gap-2 text-xs text-gray-400">
               <span className="w-4 h-4 rounded-full bg-brand-600/20 text-brand-400 text-xs flex items-center justify-center flex-shrink-0">{i + 1}</span>

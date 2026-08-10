@@ -1,6 +1,6 @@
 import { useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
-import { Video, FileText, BarChart3, ArrowRight, Zap, Target, TrendingUp } from 'lucide-react'
+import { Video, FileText, ArrowRight, Zap, Target } from 'lucide-react'
 import { useAuth } from '../context/AuthContext'
 
 const FEATURES = [
@@ -22,20 +22,9 @@ const FEATURES = [
     glow: 'shadow-emerald-900/40',
     badge: 'Feature 2',
     title: 'Resume Analyzer',
-    description: 'Upload your resume and paste a job description. Get a semantic skill-gap analysis with actionable improvement suggestions.',
-    points: ['Semantic similarity (BERT)', 'Matched vs missing skills', 'Improvement suggestions', 'PDF & DOCX support'],
-    stat: { icon: Target, label: 'Skill gap analysis' },
-  },
-  {
-    to: '/ats',
-    icon: BarChart3,
-    color: 'from-amber-500 to-orange-600',
-    glow: 'shadow-amber-900/40',
-    badge: 'Feature 3',
-    title: 'ATS Score',
-    description: 'Find out if your resume will pass automated screening systems. Get a score, identify missing keywords, and fix formatting issues.',
-    points: ['ATS compatibility score', 'Keyword matching', 'Section structure check', 'Formatting recommendations'],
-    stat: { icon: TrendingUp, label: '0–100 score' },
+    description: 'Upload your resume — optionally with a job description — and get an AI-scored ATS report: skill gaps, missing keywords, formatting issues, and actionable recommendations, all in one pass.',
+    points: ['ATS compatibility score (0-100)', 'Matched vs missing keywords', 'Formatting & structure check', 'Improvement recommendations'],
+    stat: { icon: Target, label: '0–100 score' },
   },
 ]
 
@@ -65,7 +54,7 @@ export default function HomePage() {
       </motion.div>
 
       {/* Feature cards */}
-      <div className="grid gap-6 lg:grid-cols-3">
+      <div className="grid gap-6 lg:grid-cols-2">
         {FEATURES.map((f, i) => (
           <motion.div
             key={f.to}
@@ -129,7 +118,7 @@ export default function HomePage() {
         <div>
           <p className="text-sm font-medium text-brand-300">Pro tip</p>
           <p className="text-sm text-gray-400 mt-0.5">
-            Start with the ATS Score to check your current resume, then use the Resume Analyzer to fix skill gaps, and finally practice with Mock Interviews.
+            Start with the Resume Analyzer to check your ATS score and fix skill gaps, then practice with a Mock Interview.
           </p>
         </div>
       </motion.div>

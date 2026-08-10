@@ -8,7 +8,7 @@ require('dotenv').config();
 const authRoutes = require('./routes/auth');
 const interviewRoutes = require('./routes/interview');
 const resumeRoutes = require('./routes/resume');
-const atsRoutes = require('./routes/ats');
+const careerRoutes = require('./routes/career')
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -23,6 +23,7 @@ app.use(cors({
   ],
   credentials: true,
 }));
+
 
 // Rate limiting
 const limiter = rateLimit({
@@ -40,7 +41,7 @@ app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 app.use('/api/auth', authRoutes);
 app.use('/api/interview', interviewRoutes);
 app.use('/api/resume', resumeRoutes);
-app.use('/api/ats', atsRoutes);
+app.use('/api/career', careerRoutes);
 
 // Health check
 app.get('/health', (req, res) => res.json({ status: 'OK', timestamp: new Date() }));
