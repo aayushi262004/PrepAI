@@ -33,7 +33,7 @@ function FileDropZone({ onFile, file, loading }) {
       className={`flex flex-col items-center justify-center gap-3 p-10 rounded-2xl border-2 border-dashed cursor-pointer transition-all duration-200 ${loading ? 'opacity-50 cursor-not-allowed pointer-events-none' :
           dragging ? 'border-brand-500 bg-brand-600/10' :
             file ? 'border-emerald-600/40 bg-emerald-600/5' :
-              'border-white/10 bg-surface-200 hover:border-brand-600/40 hover:bg-brand-600/5'
+              'border-line-strong bg-surface-200 hover:border-brand-600/40 hover:bg-brand-600/5'
         }`}
     >
       <input type="file" accept=".pdf,.doc,.docx" className="hidden" disabled={loading}
@@ -42,13 +42,13 @@ function FileDropZone({ onFile, file, loading }) {
         <>
           <Loader2 className="w-10 h-10 text-brand-400 animate-spin" />
           <p className="text-sm font-medium text-brand-300">Reading and embedding your resume...</p>
-          <p className="text-xs text-gray-500">This takes about 10–20 seconds</p>
+          <p className="text-xs text-ink-faint">This takes about 10–20 seconds</p>
         </>
       ) : file ? (
         <>
           <FileText className="w-10 h-10 text-emerald-400" />
           <p className="text-sm font-medium text-emerald-300">{file.name}</p>
-          <p className="text-xs text-gray-500">{(file.size / 1024).toFixed(1)} KB · Click to change</p>
+          <p className="text-xs text-ink-faint">{(file.size / 1024).toFixed(1)} KB · Click to change</p>
         </>
       ) : (
         <>
@@ -56,8 +56,8 @@ function FileDropZone({ onFile, file, loading }) {
             <Upload className="w-8 h-8 text-brand-400" />
           </div>
           <div className="text-center">
-            <p className="text-base font-medium text-gray-200">Drop your resume here</p>
-            <p className="text-sm text-gray-500 mt-1">PDF or DOCX · Max 5MB</p>
+            <p className="text-base font-medium text-ink-muted">Drop your resume here</p>
+            <p className="text-sm text-ink-faint mt-1">PDF or DOCX · Max 5MB</p>
           </div>
         </>
       )}
@@ -85,8 +85,8 @@ function MessageBubble({ msg, isLatest }) {
 
       {/* Bubble */}
       <div className={`max-w-[80%] rounded-2xl px-4 py-3 text-sm leading-relaxed ${isUser
-          ? 'bg-brand-600/20 border border-brand-600/30 text-gray-100 rounded-tr-sm'
-          : 'bg-surface-200 border border-white/8 text-gray-200 rounded-tl-sm'
+          ? 'bg-brand-600/20 border border-brand-600/30 text-ink rounded-tr-sm'
+          : 'bg-surface-200 border border-line text-ink rounded-tl-sm'
         }`}>
         {/* Render markdown-like formatting */}
         {msg.content.split('\n').map((line, i) => {
@@ -114,10 +114,10 @@ function TypingIndicator() {
       <div className="w-8 h-8 rounded-full flex-shrink-0 flex items-center justify-center bg-violet-600/20 border border-violet-600/30">
         <Bot className="w-4 h-4 text-violet-300" />
       </div>
-      <div className="bg-surface-200 border border-white/8 rounded-2xl rounded-tl-sm px-4 py-3">
+      <div className="bg-surface-200 border border-line rounded-2xl rounded-tl-sm px-4 py-3">
         <div className="flex gap-1 items-center h-4">
           {[0, 0.2, 0.4].map((d, i) => (
-            <motion.div key={i} className="w-1.5 h-1.5 bg-gray-400 rounded-full"
+            <motion.div key={i} className="w-1.5 h-1.5 bg-ink-faint rounded-full"
               animate={{ y: [0, -4, 0] }}
               transition={{ duration: 0.6, delay: d, repeat: Infinity }} />
           ))}
@@ -254,12 +254,12 @@ export default function CareerAssistantPage() {
 
         {/* What you can ask */}
         <div className="mt-8">
-          <p className="text-xs font-medium text-gray-500 uppercase tracking-wider mb-3">Example questions you can ask</p>
+          <p className="text-xs font-medium text-ink-faint uppercase tracking-wider mb-3">Example questions you can ask</p>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
             {SUGGESTIONS.map((s, i) => (
-              <div key={i} className="flex items-start gap-2 p-3 rounded-xl bg-surface-200 border border-white/5">
+              <div key={i} className="flex items-start gap-2 p-3 rounded-xl bg-surface-200 border border-line">
                 <span className="text-brand-400 text-sm mt-0.5">→</span>
-                <span className="text-sm text-gray-400">{s}</span>
+                <span className="text-sm text-ink-muted">{s}</span>
               </div>
             ))}
           </div>
@@ -268,7 +268,7 @@ export default function CareerAssistantPage() {
         {/* RAG explanation */}
         <div className="mt-6 p-4 rounded-xl bg-violet-600/5 border border-violet-600/20">
           <p className="text-xs font-medium text-violet-400 mb-2">How this works (RAG)</p>
-          <p className="text-xs text-gray-400 leading-relaxed">
+          <p className="text-xs text-ink-muted leading-relaxed">
             Your resume is split into sections, converted to vectors, and stored in a vector database.
             When you ask a question, the most relevant sections are retrieved and sent to the LLM as context —
             so answers are based on your actual resume, not generic advice.
@@ -282,17 +282,17 @@ export default function CareerAssistantPage() {
   return (
     <div className="flex flex-col h-[calc(100vh-8rem)] max-w-3xl">
       {/* Chat header */}
-      <div className="flex items-center justify-between pb-4 border-b border-white/5 flex-shrink-0">
+      <div className="flex items-center justify-between pb-4 border-b border-line flex-shrink-0">
         <div className="flex items-center gap-3">
           <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-violet-500 to-purple-600 flex items-center justify-center">
             <Sparkles className="w-4 h-4 text-white" />
           </div>
           <div>
-            <h2 className="text-white font-semibold text-sm">AI Career Assistant</h2>
-            <p className="text-xs text-gray-500">{resumeFileName || 'Resume loaded'} · RAG-powered</p>
+            <h2 className="text-ink font-semibold text-sm">AI Career Assistant</h2>
+            <p className="text-xs text-ink-faint">{resumeFileName || 'Resume loaded'} · RAG-powered</p>
           </div>
         </div>
-        <button onClick={handleReset} className="btn-ghost flex items-center gap-1.5 text-xs text-gray-500 hover:text-red-400">
+        <button onClick={handleReset} className="btn-ghost flex items-center gap-1.5 text-xs text-ink-faint hover:text-red-400">
           <RotateCcw className="w-3.5 h-3.5" /> New resume
         </button>
       </div>
@@ -315,11 +315,11 @@ export default function CareerAssistantPage() {
             exit={{ opacity: 0, height: 0 }}
             className="pb-3 flex-shrink-0"
           >
-            <p className="text-xs text-gray-600 mb-2">Try asking:</p>
+            <p className="text-xs text-ink-faint mb-2">Try asking:</p>
             <div className="flex flex-wrap gap-2">
               {SUGGESTIONS.slice(0, 4).map((s, i) => (
                 <button key={i} onClick={() => handleSend(s)}
-                  className="text-xs px-3 py-1.5 rounded-full bg-surface-300 border border-white/10 text-gray-400 hover:text-white hover:border-brand-600/40 transition-all">
+                  className="text-xs px-3 py-1.5 rounded-full bg-surface-300 border border-line-strong text-ink-muted hover:text-ink hover:border-brand-600/40 transition-all">
                   {s}
                 </button>
               ))}
@@ -329,7 +329,7 @@ export default function CareerAssistantPage() {
       </AnimatePresence>
 
       {/* Input */}
-      <div className="flex gap-3 pt-3 border-t border-white/5 flex-shrink-0">
+      <div className="flex gap-3 pt-3 border-t border-line flex-shrink-0">
         <textarea
           ref={inputRef}
           className="input-field flex-1 resize-none h-12 py-3 leading-normal"
@@ -355,7 +355,7 @@ export default function CareerAssistantPage() {
           }
         </button>
       </div>
-      <p className="text-xs text-gray-600 text-center mt-2">Enter to send · Shift+Enter for new line</p>
+      <p className="text-xs text-ink-faint text-center mt-2">Enter to send · Shift+Enter for new line</p>
     </div>
   )
 }

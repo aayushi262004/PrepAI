@@ -22,14 +22,14 @@ function ScoreRing({ score }) {
   const color = score >= 70 ? '#34d399' : score >= 45 ? '#fbbf24' : '#f87171'
   return (
     <svg width="140" height="140" viewBox="0 0 140 140">
-      <circle cx="70" cy="70" r={r} fill="none" stroke="#1e1e2a" strokeWidth="10" />
+      <circle cx="70" cy="70" r={r} fill="none" stroke="rgb(var(--surface-300))" strokeWidth="10" />
       <circle cx="70" cy="70" r={r} fill="none" stroke={color} strokeWidth="10"
         strokeLinecap="round" strokeDasharray={circ} strokeDashoffset={offset}
         transform="rotate(-90 70 70)"
         style={{ transition: 'stroke-dashoffset 1.5s cubic-bezier(0.34,1.56,0.64,1)' }}
       />
-      <text x="70" y="67" textAnchor="middle" fill="white" fontSize="26" fontWeight="700" fontFamily="Syne">{score}</text>
-      <text x="70" y="85" textAnchor="middle" fill="#6b7280" fontSize="12" fontFamily="DM Sans">/ 100</text>
+      <text x="70" y="67" textAnchor="middle" fill="rgb(var(--ink))" fontSize="26" fontWeight="700" fontFamily="Syne">{score}</text>
+      <text x="70" y="85" textAnchor="middle" fill="rgb(var(--ink-faint))" fontSize="12" fontFamily="DM Sans">/ 100</text>
     </svg>
   )
 }
@@ -42,8 +42,8 @@ function CameraView({ stream }) {
   }, [stream])
   if (!stream) return (
     <div className="flex-1 bg-surface-300 rounded-xl flex flex-col items-center justify-center gap-2 min-h-[200px]">
-      <VideoOff className="w-8 h-8 text-gray-500" />
-      <p className="text-xs text-gray-500">Camera off</p>
+      <VideoOff className="w-8 h-8 text-ink-faint" />
+      <p className="text-xs text-ink-faint">Camera off</p>
     </div>
   )
   return <video ref={videoRef} autoPlay muted playsInline className="flex-1 rounded-xl object-cover bg-black min-h-[200px] w-full" />
@@ -371,8 +371,8 @@ export default function InterviewPage() {
 
         <div className="glass-card mb-6 flex flex-col items-center py-8">
           <ScoreRing score={results.score || 0} />
-          <p className="text-gray-400 mt-4 text-sm">Overall Score</p>
-          <p className="text-white text-center mt-4 max-w-sm leading-relaxed">{results.summary}</p>
+          <p className="text-ink-muted mt-4 text-sm">Overall Score</p>
+          <p className="text-ink text-center mt-4 max-w-sm leading-relaxed">{results.summary}</p>
         </div>
 
         <div className="grid sm:grid-cols-2 gap-4 mb-6">
@@ -380,7 +380,7 @@ export default function InterviewPage() {
             <h3 className="section-title text-emerald-400">✓ Strengths</h3>
             <ul className="space-y-2">
               {(results.strengths || []).map((s, i) => (
-                <li key={i} className="flex items-start gap-2 text-sm text-gray-300">
+                <li key={i} className="flex items-start gap-2 text-sm text-ink-muted">
                   <CheckCircle className="w-4 h-4 text-emerald-400 flex-shrink-0 mt-0.5" />{s}
                 </li>
               ))}
@@ -390,7 +390,7 @@ export default function InterviewPage() {
             <h3 className="section-title text-amber-400">↑ Improve</h3>
             <ul className="space-y-2">
               {(results.improvements || []).map((s, i) => (
-                <li key={i} className="flex items-start gap-2 text-sm text-gray-300">
+                <li key={i} className="flex items-start gap-2 text-sm text-ink-muted">
                   <ChevronRight className="w-4 h-4 text-amber-400 flex-shrink-0 mt-0.5" />{s}
                 </li>
               ))}
@@ -434,7 +434,7 @@ export default function InterviewPage() {
             <div className="grid grid-cols-2 gap-2">
               {/* Camera toggle */}
               <button onClick={toggleCamera}
-                className={`flex items-center justify-center gap-2 py-2.5 rounded-xl text-sm font-medium border transition-all ${camOn ? 'bg-brand-600/20 border-brand-600/40 text-brand-300' : 'bg-surface-300 border-white/10 text-gray-400 hover:text-white'
+                className={`flex items-center justify-center gap-2 py-2.5 rounded-xl text-sm font-medium border transition-all ${camOn ? 'bg-brand-600/20 border-brand-600/40 text-brand-300' : 'bg-surface-300 border-line-strong text-ink-muted hover:text-ink'
                   }`}>
                 {camOn ? <Video className="w-4 h-4" /> : <VideoOff className="w-4 h-4" />}
                 {camOn ? 'Camera' : 'Camera'}
@@ -446,8 +446,8 @@ export default function InterviewPage() {
                 className={`flex items-center justify-center gap-2 py-2.5 rounded-xl text-sm font-medium border transition-all ${isListening
                     ? 'bg-red-600/20 border-red-600/40 text-red-300 animate-pulse'
                     : speechSupported
-                      ? 'bg-surface-300 border-white/10 text-gray-400 hover:text-white hover:border-brand-600/40'
-                      : 'bg-surface-300 border-white/10 text-gray-600 cursor-not-allowed'
+                      ? 'bg-surface-300 border-line-strong text-ink-muted hover:text-ink hover:border-brand-600/40'
+                      : 'bg-surface-300 border-line-strong text-ink-faint cursor-not-allowed'
                   }`}>
                 {isListening ? <Square className="w-4 h-4" /> : <Mic className="w-4 h-4" />}
                 {isListening ? 'Stop' : 'Speak'}
@@ -475,7 +475,7 @@ export default function InterviewPage() {
                 </div>
               )}
               {!speechSupported && (
-                <p className="text-xs text-gray-500 text-center">Use Chrome for speech recording</p>
+                <p className="text-xs text-ink-faint text-center">Use Chrome for speech recording</p>
               )}
             </div>
           </div>
@@ -488,7 +488,7 @@ export default function InterviewPage() {
                 <span className="badge-blue">Q{currentQ + 1} of {questions.length}</span>
                 <span className="badge-amber capitalize">{q.type}</span>
               </div>
-              <p className="text-white font-medium leading-relaxed text-lg">{q.question}</p>
+              <p className="text-ink font-medium leading-relaxed text-lg">{q.question}</p>
               <button onClick={() => speakQuestion(q.question, q.audioBase64)} disabled={speaking}
                 className="mt-3 flex items-center gap-2 text-sm text-brand-400 hover:text-brand-300 transition-colors">
                 <Volume2 className={`w-4 h-4 ${speaking ? 'animate-pulse' : ''}`} />
@@ -502,13 +502,13 @@ export default function InterviewPage() {
                 <label className="label mb-0">Your Answer</label>
                 <div className="flex items-center gap-3">
                   {/* Word count */}
-                  <span className={`text-xs ${answerLength > 20 ? 'text-emerald-400' : 'text-gray-500'}`}>
+                  <span className={`text-xs ${answerLength > 20 ? 'text-emerald-400' : 'text-ink-faint'}`}>
                     {answerLength} words {answerLength > 20 ? '✓' : '(aim for 50+)'}
                   </span>
                   {/* Clear button */}
                   {transcript && (
                     <button onClick={() => { resetTranscript(); setTranscript('') }}
-                      className="text-xs text-gray-500 hover:text-red-400 transition-colors">
+                      className="text-xs text-ink-faint hover:text-red-400 transition-colors">
                       Clear
                     </button>
                   )}
@@ -527,8 +527,8 @@ export default function InterviewPage() {
               />
               {/* Tip */}
               {speechSupported && !isListening && !transcript && (
-                <p className="text-xs text-gray-600 mt-1.5">
-                  💡 Click <span className="text-gray-400">Speak</span> → talk naturally → click <span className="text-gray-400">Stop</span>. Your words appear in real time.
+                <p className="text-xs text-ink-faint mt-1.5">
+                  💡 Click <span className="text-ink-muted">Speak</span> → talk naturally → click <span className="text-ink-muted">Stop</span>. Your words appear in real time.
                 </p>
               )}
             </div>

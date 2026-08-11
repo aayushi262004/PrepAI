@@ -44,11 +44,11 @@ export default function HomePage() {
     <div>
       {/* Header */}
       <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} className="mb-10">
-        <p className="text-gray-500 text-sm font-medium mb-1">{greeting},</p>
-        <h1 className="text-4xl font-display font-bold text-white">
+        <p className="text-ink-faint text-sm font-medium mb-1">{greeting},</p>
+        <h1 className="text-4xl font-display font-bold text-ink">
           {user?.name?.split(' ')[0]} 👋
         </h1>
-        <p className="text-gray-400 mt-2 max-w-lg">
+        <p className="text-ink-muted mt-2 max-w-lg">
           Ready to level up your career? Pick a tool below and let AI help you land your next role.
         </p>
       </motion.div>
@@ -78,13 +78,13 @@ export default function HomePage() {
             <div className="flex items-center gap-2 mb-1">
               <span className="badge-blue text-xs">{f.badge}</span>
             </div>
-            <h2 className="text-xl font-display font-bold text-white mb-2">{f.title}</h2>
-            <p className="text-gray-400 text-sm leading-relaxed mb-4">{f.description}</p>
+            <h2 className="text-xl font-display font-bold text-ink mb-2">{f.title}</h2>
+            <p className="text-ink-muted text-sm leading-relaxed mb-4">{f.description}</p>
 
             {/* Points */}
             <ul className="space-y-1.5 mb-5">
               {f.points.map(p => (
-                <li key={p} className="flex items-center gap-2 text-xs text-gray-400">
+                <li key={p} className="flex items-center gap-2 text-xs text-ink-muted">
                   <div className="w-1 h-1 rounded-full bg-brand-500 flex-shrink-0" />
                   {p}
                 </li>
@@ -92,8 +92,8 @@ export default function HomePage() {
             </ul>
 
             {/* CTA */}
-            <div className="flex items-center justify-between mt-auto pt-4 border-t border-white/5">
-              <div className="flex items-center gap-1.5 text-xs text-gray-500">
+            <div className="flex items-center justify-between mt-auto pt-4 border-t border-line">
+              <div className="flex items-center gap-1.5 text-xs text-ink-faint">
                 <f.stat.icon className="w-3.5 h-3.5" />
                 {f.stat.label}
               </div>
@@ -117,7 +117,7 @@ export default function HomePage() {
         </div>
         <div>
           <p className="text-sm font-medium text-brand-300">Pro tip</p>
-          <p className="text-sm text-gray-400 mt-0.5">
+          <p className="text-sm text-ink-muted mt-0.5">
             Start with the Resume Analyzer to check your ATS score and fix skill gaps, then practice with a Mock Interview.
           </p>
         </div>

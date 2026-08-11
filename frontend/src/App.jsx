@@ -1,6 +1,8 @@
 import { Routes, Route, Navigate } from 'react-router-dom'
 import { AuthProvider, useAuth } from './context/AuthContext'
+import { ThemeProvider } from './context/ThemeContext'
 import SplashPage from './pages/SplashPage'
+import LandingPage from './pages/LandingPage'
 import AuthPage from './pages/AuthPage'
 import HomePage from './pages/HomePage'
 import InterviewPage from './pages/InterviewPage'
@@ -32,16 +34,19 @@ function PublicRoute({ children }) {
 
 export default function App() {
   return (
-    <AuthProvider>
-      <Routes>
-        <Route path="/" element={<SplashPage />} />
-        <Route path="/auth" element={<PublicRoute><AuthPage /></PublicRoute>} />
-        <Route path="/home" element={<ProtectedRoute><DashboardLayout><HomePage /></DashboardLayout></ProtectedRoute>} />
-        <Route path="/interview" element={<ProtectedRoute><DashboardLayout><InterviewPage /></DashboardLayout></ProtectedRoute>} />
-        <Route path="/resume" element={<ProtectedRoute><DashboardLayout><ResumeAnalysisPage /></DashboardLayout></ProtectedRoute>} />
-        <Route path="/career" element={<ProtectedRoute><DashboardLayout><CareerAssistantPage /></DashboardLayout></ProtectedRoute>} />
-        <Route path="*" element={<Navigate to="/" replace />} />
-      </Routes>
-    </AuthProvider>
+    <ThemeProvider>
+      <AuthProvider>
+        <Routes>
+          <Route path="/" element={<SplashPage />} />
+          <Route path="/welcome" element={<PublicRoute><LandingPage /></PublicRoute>} />
+          <Route path="/auth" element={<PublicRoute><AuthPage /></PublicRoute>} />
+          <Route path="/home" element={<ProtectedRoute><DashboardLayout><HomePage /></DashboardLayout></ProtectedRoute>} />
+          <Route path="/interview" element={<ProtectedRoute><DashboardLayout><InterviewPage /></DashboardLayout></ProtectedRoute>} />
+          <Route path="/resume" element={<ProtectedRoute><DashboardLayout><ResumeAnalysisPage /></DashboardLayout></ProtectedRoute>} />
+          <Route path="/career" element={<ProtectedRoute><DashboardLayout><CareerAssistantPage /></DashboardLayout></ProtectedRoute>} />
+          <Route path="*" element={<Navigate to="/" replace />} />
+        </Routes>
+      </AuthProvider>
+    </ThemeProvider>
   )
 }

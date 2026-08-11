@@ -1,11 +1,14 @@
 import { useState } from 'react'
+import { useLocation } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Eye, EyeOff, Mail, Lock, User, ArrowRight } from 'lucide-react'
 import toast from 'react-hot-toast'
 import { useAuth } from '../context/AuthContext'
+import ThemeToggle from '../components/ThemeToggle'
 
 export default function AuthPage() {
-  const [tab, setTab] = useState('login')
+  const location = useLocation()
+  const [tab, setTab] = useState(location.state?.tab === 'signup' ? 'signup' : 'login')
   const [showPass, setShowPass] = useState(false)
   const [loading, setLoading] = useState(false)
   const [form, setForm] = useState({ name: '', email: '', password: '' })
@@ -39,6 +42,10 @@ export default function AuthPage() {
       <div className="absolute inset-0 bg-mesh opacity-40" />
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[400px] bg-brand-600/8 rounded-full blur-3xl" />
 
+      <div className="absolute top-4 right-4 z-20">
+        <ThemeToggle />
+      </div>
+
       <motion.div
         initial={{ opacity: 0, y: 30 }}
         animate={{ opacity: 1, y: 0 }}
@@ -52,8 +59,8 @@ export default function AuthPage() {
               <path d="M8 40c0-8.837 7.163-16 16-16s16 7.163 16 16" stroke="white" strokeWidth="3" strokeLinecap="round" opacity="0.7" />
             </svg>
           </div>
-          <h1 className="text-2xl font-display font-bold text-white">PrepAI</h1>
-          <p className="text-gray-500 text-sm mt-1">
+          <h1 className="text-2xl font-display font-bold text-ink">PrepAI</h1>
+          <p className="text-ink-faint text-sm mt-1">
             {tab === 'login' ? 'Welcome back, let\'s get you ready' : 'Start your journey to your dream job'}
           </p>
         </div>
@@ -66,7 +73,7 @@ export default function AuthPage() {
               <button
                 key={t}
                 onClick={() => setTab(t)}
-                className={`flex-1 py-2 text-sm font-medium rounded-lg transition-all duration-200 ${tab === t ? 'bg-brand-600 text-white shadow-md' : 'text-gray-400 hover:text-white'
+                className={`flex-1 py-2 text-sm font-medium rounded-lg transition-all duration-200 ${tab === t ? 'bg-brand-600 text-white shadow-md' : 'text-ink-muted hover:text-ink'
                   }`}
               >
                 {t === 'login' ? 'Sign In' : 'Create Account'}
@@ -85,7 +92,7 @@ export default function AuthPage() {
                 >
                   <label className="label">Full Name</label>
                   <div className="relative">
-                    <User className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
+                    <User className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-ink-faint" />
                     <input
                       type="text"
                       value={form.name}
@@ -101,7 +108,7 @@ export default function AuthPage() {
             <div>
               <label className="label">Email</label>
               <div className="relative">
-                <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
+                <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-ink-faint" />
                 <input
                   type="email"
                   value={form.email}
@@ -116,7 +123,7 @@ export default function AuthPage() {
             <div>
               <label className="label">Password</label>
               <div className="relative">
-                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
+                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-ink-faint" />
                 <input
                   type={showPass ? 'text' : 'password'}
                   value={form.password}
@@ -128,7 +135,7 @@ export default function AuthPage() {
                 <button
                   type="button"
                   onClick={() => setShowPass(v => !v)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-300"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-ink-faint hover:text-ink"
                 >
                   {showPass ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                 </button>
@@ -152,7 +159,7 @@ export default function AuthPage() {
           </form>
         </div>
 
-        <p className="text-center text-sm text-gray-600 mt-4">
+        <p className="text-center text-sm text-ink-faint mt-4">
           {tab === 'login' ? "Don't have an account? " : "Already have an account? "}
           <button onClick={() => setTab(tab === 'login' ? 'signup' : 'login')} className="text-brand-400 hover:text-brand-300 font-medium">
             {tab === 'login' ? 'Sign up' : 'Sign in'}

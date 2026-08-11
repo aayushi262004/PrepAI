@@ -6,7 +6,7 @@ export default function SplashPage() {
   const navigate = useNavigate()
 
   useEffect(() => {
-    const timer = setTimeout(() => navigate('/auth'), 3000)
+    const timer = setTimeout(() => navigate('/welcome'), 3000)
     return () => clearTimeout(timer)
   }, [navigate])
 
@@ -41,7 +41,7 @@ export default function SplashPage() {
           initial={{ y: 30, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           transition={{ delay: 0.3, duration: 0.6 }}
-          className="text-6xl font-display font-bold text-white tracking-tight"
+          className="text-6xl font-display font-bold text-ink tracking-tight"
         >
           Prep<span className="text-brand-400">AI</span>
         </motion.h1>
@@ -50,7 +50,7 @@ export default function SplashPage() {
           initial={{ y: 20, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           transition={{ delay: 0.5, duration: 0.5 }}
-          className="mt-3 text-gray-400 text-lg tracking-wide"
+          className="mt-3 text-ink-muted text-lg tracking-wide"
         >
           Your AI-powered career accelerator
         </motion.p>
