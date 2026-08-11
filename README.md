@@ -1,5 +1,16 @@
 # PrepAI — AI-Powered Interview & Resume Platform
 
+## Live Demo
+- **App**: https://prep-ai-eta-steel.vercel.app/
+- **Backend API**: https://prepai-h7wq.onrender.com (Render free tier — first request after idle may take a moment to wake up)
+
+## Features
+- **Public landing page** (`/welcome`) — visitors can browse all 3 tools and what they do before signing up; picking one prompts sign in / create account
+- **AI Mock Interview** — tailored questions from a job description, read aloud, answered on camera with speech-to-text
+- **Resume Analyzer** — AI-scored ATS report: skill gaps, missing keywords, formatting issues, recommendations
+- **Career Assistant** — RAG-powered chat grounded in your uploaded resume
+- **Light / dark theme** — follows system preference by default, toggle in the nav/sidebar, choice remembered across sessions
+
 ## Tech Stack
 - **Frontend**: React 18 + Vite + TailwindCSS + Framer Motion
 - **Backend**: Node.js + Express.js
